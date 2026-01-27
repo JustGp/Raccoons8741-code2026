@@ -15,6 +15,9 @@ https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html
 Esta parte es un poco mas compleja, tienes dos opciones
 - Online instalation: Mas simple, simplemente en tu vscode de wpilib busca la seccion de vendor dependencies, las cuales estan con el logo de wpilib en la izquierda al fondo, y busca revlib
 
--Ofline instalation: Mas complicado, ya esta adjunto la dependencia en la carpeta de dependencias, solo se tiene que seguir las instrucciones proporcionadas por la documentacion de first
+- Ofline instalation: Mas complicado, ya esta adjunto la dependencia en la carpeta de dependencias, solo se tiene que seguir las instrucciones proporcionadas por la documentacion de first
 https://docs.wpilib.org/en/latest/docs/software/vscode-overview/3rd-party-libraries.html#adding-offline-libraries
 
+# Carpetas
+
+Actualmente hay tres carpetas disponibles ambos 2026Kitbot Classes e Inliners son las puras plantillas de el kitbot, y no estan consideradas como carpetas de WPILIB, esto se soluciona haciendo un documento desde cero de wpilip y copiar los contenidos de la carpeta dentro de estas, esto es lo que la carpeta Kitbot Classes es, y es la que generalmente estaran usando
