@@ -20,4 +20,4 @@ https://docs.wpilib.org/en/latest/docs/software/vscode-overview/3rd-party-librar
 
 # Carpetas
 
-Actualmente hay tres carpetas disponibles ambos 2026Kitbot Classes e Inliners son las puras plantillas de el kitbot, y no estan consideradas como carpetas de WPILIB, esto se soluciona haciendo un documento desde cero de wpilip y copiar los contenidos de la carpeta dentro de estas, esto es lo que la carpeta Kitbot Classes es, y es la que generalmente estaran usando
+La carpeta unica que esta es la del codigo del robot, si te da errores al copiarlo en tu computadora haz un nuevo file de wpilib y copia el codigo ahi, recuerda volver a hacer lo de la instalacion de REVlib si es necesario
