@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
@@ -24,7 +25,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 public class Robot extends TimedRobot {
   private final SparkMax m_leftDrive = new SparkMax(1, MotorType.kBrushed);
   private final SparkMax m_rightDrive = new SparkMax(2, MotorType.kBrushed);
-  private final SparkMax main_launcher = new SparkMax(5, MotorType.kBrushed);
+
+  //Setting up the motors 
+  private final SparkMax main_launcher = new SparkMax(5, MotorType.kBrushless);
   private final SparkMax directioner = new SparkMax(6, MotorType.kBrushed);
 
   private XboxController m_controller = new XboxController(0);
@@ -110,10 +113,14 @@ public class Robot extends TimedRobot {
 
 
 
-  //Grab n launch 2.0
+  //shoot
   if(m_controller.getAButton()){
+    directioner.set(0);
+    main_launcher.set(0);
+
+
     directioner.set(1);
-    main_launcher.set(-1);
+    main_launcher.set(1);// to laucnh put 1
   }
 
 
@@ -127,8 +134,21 @@ public class Robot extends TimedRobot {
   //grab n store
 
   if(m_controller.getXButton()){
+    directioner.set(0);
+    main_launcher.set(0);
+
+
     directioner.set(-1);
-    main_launcher.set(-1);
+    main_launcher.set(0.6);//negative
+  }
+
+  if (m_controller.getYButton()){
+    directioner.set(0);
+    main_launcher.set(0);
+
+    directioner.set(1);
+    main_launcher.set(-0.4);
+
   }
   
 }
