@@ -139,15 +139,15 @@ public class Robot extends TimedRobot {
 
 
     directioner.set(-1);
-    main_launcher.set(0.6);//negative
+    main_launcher.set(0.55);//negative
   }
-
+//spit
   if (m_controller.getYButton()){
     directioner.set(0);
     main_launcher.set(0);
 
     directioner.set(1);
-    main_launcher.set(-0.4);
+    main_launcher.set(-0.55);
 
   }
   
