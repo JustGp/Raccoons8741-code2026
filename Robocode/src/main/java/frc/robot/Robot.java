@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.XboxController;
@@ -12,10 +13,33 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
+import static edu.wpi.first.units.Units.Volt;
+
 import com.fasterxml.jackson.annotation.Nulls;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.RobotController;
+
+/*
+ *          Hello!!!
+ * at the movement of the robot
+ *  (-) is forward ( towards the eater side)
+ * 
+ * 
+ * At the main shooter
+ * (+) Shoot and grab
+ * (-)Spit
+ * 
+ * At the directioner 
+ * (+)In
+ * (-) Out
+ * 
+ * 
+ * Controller controls:
+ * 
+ * 
+ */
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -28,7 +52,7 @@ public class Robot extends TimedRobot {
 
   //Setting up the motors 
   private final SparkMax main_launcher = new SparkMax(5, MotorType.kBrushless);
-  private final SparkMax directioner = new SparkMax(6, MotorType.kBrushed);
+  private final SparkMax directioner = new SparkMax(6, MotorType.kBrushless);
 
   private XboxController m_controller = new XboxController(0);
 
@@ -38,6 +62,23 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private final Timer m_timer = new Timer();
+
+  private double StartTime;
+  private double realtime;
+
+  private final double drift_fix = 0.13955;
+
+  private final double drift2 = -0.13955;
+// For autonomous
+  private double EffectiveVoltage = 8;
+  private double Voltage = 0;
+  private double PercentageVoltage = 0;
+
+
+
+
+  private double velocity = 0.5;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -81,11 +122,49 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
+    StartTime = System.currentTimeMillis();
+
+    m_timer.reset();
+    m_timer.start();
+
+    //Get the voltage from the battery and calculate the effective voltage for the motors
+    Voltage = RobotController.getBatteryVoltage();
+    PercentageVoltage = EffectiveVoltage/Voltage;
+    System.out.println("Percentage voltage: " + PercentageVoltage);
+
+    //Formula for distance, calculator adjunted in the github
+    //a+b(PV)+c*t+d(PV*t)+e(PV^2)*t
+
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    double time = Timer.getFPGATimestamp();
+    realtime = time - StartTime;
+    System.out.println(m_timer.get());
+
+
+
+    if ((m_timer.get()) < 2.0) {
+      m_robotDrive.arcadeDrive(-PercentageVoltage, drift2);
+      System.out.println(realtime);
+    } 
+    else{
+      m_robotDrive.arcadeDrive(0, 0);
+
+    }
+    
+
+
+
+
+
+
+
+
+  }
+
 
   @Override
   public void teleopInit() {
@@ -103,7 +182,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() 
   {
 
-   m_robotDrive.arcadeDrive(-m_controller.getLeftY()*0.7, m_controller.getRightX()*0.7);
+   m_robotDrive.arcadeDrive(m_controller.getLeftY()*0.7, m_controller.getRightX()*0.7);
    System.out.println(m_controller.getLeftY());
 
 
@@ -114,12 +193,12 @@ public class Robot extends TimedRobot {
 
 
   //shoot
-  if(m_controller.getAButton()){
+  if(m_controller.getRightBumper()){
     directioner.set(0);
     main_launcher.set(0);
 
 
-    directioner.set(1);
+    directioner.set(-1);
     main_launcher.set(1);// to laucnh put 1
   }
 
@@ -131,22 +210,22 @@ public class Robot extends TimedRobot {
 
   }
 
-  //grab n store
+  //grab n store aka eat
 
   if(m_controller.getXButton()){
     directioner.set(0);
     main_launcher.set(0);
 
 
-    directioner.set(-1);
-    main_launcher.set(0.55);//negative
+    directioner.set(0.6);
+    main_launcher.set(0.3);//negative
   }
 //spit
   if (m_controller.getYButton()){
     directioner.set(0);
     main_launcher.set(0);
 
-    directioner.set(1);
+    directioner.set(0.5);
     main_launcher.set(-0.55);
 
   }
