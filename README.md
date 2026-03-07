@@ -21,3 +21,24 @@ https://docs.wpilib.org/en/latest/docs/software/vscode-overview/3rd-party-librar
 # Carpetas
 
 La carpeta unica que esta es la del codigo del robot, si te da errores al copiarlo en tu computadora haz un nuevo file de wpilib y copia el codigo ahi, recuerda volver a hacer lo de la instalacion de REVlib si es necesario
+
+# Broad documentation step by step
+Puede tener errores en primeras versiones, por mejorar
+### Import's
+La primera parte son varias importacion, todas deberian checar que hace cada una, pero en lo personal las mas importantes son SparkMax y XboxController
+
+### TimedRobot
+Este codigo es usado cuando el robot enciende por primera vez y se deberia usar para inicializar variables
+- Establecemos los sparks de los motores
+- Establecemos los sparks de el lanzador y direccionador
+- Establecemos el control
+- Establecemos el robot container y autonomous commands
+
+OJO, en los motores solo establecemos dos motores porque los otros dos estan como followers, esto lo configuramos en la aplicacion de rev
+
+### Robot
+Esta parte es llamada cada 20ms sin importar el modo del robot, se deberia usar para cosas como diagnosticos, etc.
+
+
+
+
