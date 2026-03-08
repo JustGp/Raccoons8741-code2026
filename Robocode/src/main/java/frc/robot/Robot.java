@@ -12,20 +12,32 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import static edu.wpi.first.units.Units.Volt;
+
 
 import com.fasterxml.jackson.annotation.Nulls;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.units.measure.Per;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.SPI;
 
 /*
  *          Hello!!!
  * at the movement of the robot
  *  (-) is forward ( towards the eater side)
+ *  (+) is backwards
  * 
+ * 
+ * AKA is inverted 
+ * 
+ * Rotation
+ * (+) RIght from the grabber
+ * (-) Left from the grabber
  * 
  * At the main shooter
  * (+) Shoot and grab
@@ -37,8 +49,36 @@ import edu.wpi.first.wpilibj.RobotController;
  * 
  * 
  * Controller controls:
+ * Shoot ------ Right bumper
+ * Off -------- B
+ * GrabnStore - X
+ * Spit ------- Y
  * 
  * 
+ * 
+ * Rotation
+ * 
+ * Tryouts 2
+ * Adjusted voltage 8v
+ * 0.1s - 6 degrees to the right
+ * 0.2 - 25 degreees to the right
+ * 0.25s = 39 degrees to the right
+ * 0.3 - 58 degrees to the right
+ * 0.5 = 97 degrees to the right
+ * 0.6s = 76 degrees
+ * 0.7 = 127 degrees 
+ * 0.75 = 137 degrees to the right
+ * 0.8 = 156 degrees to the right
+ * 0.9 = 178 degrees to the right 
+ * 1s = 198 degrees to the right
+ * 1.25 = 252 degrees to the right
+ * 1.5= 293 degrees to the right
+ * 1.75 = 367 degrees to the right
+ * 2s =  432 degrees to the right
+ * 
+ * 
+ * 
+ * Thank you : ) atte Gp
  */
 
 /**
@@ -130,7 +170,6 @@ public class Robot extends TimedRobot {
     //Get the voltage from the battery and calculate the effective voltage for the motors
     Voltage = RobotController.getBatteryVoltage();
     PercentageVoltage = EffectiveVoltage/Voltage;
-    System.out.println("Percentage voltage: " + PercentageVoltage);
 
     //Formula for distance, calculator adjunted in the github
     //a+b(PV)+c*t+d(PV*t)+e(PV^2)*t
@@ -140,17 +179,51 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
+    Voltage = RobotController.getBatteryVoltage();
+    PercentageVoltage = EffectiveVoltage/Voltage;
+    System.out.println("Percentage voltage: " + PercentageVoltage);
+
     double time = Timer.getFPGATimestamp();
     realtime = time - StartTime;
     System.out.println(m_timer.get());
 
+    if (m_timer.get() < 1) {
+      directioner.set(0);
+      main_launcher.set(0);
 
 
-    if ((m_timer.get()) < 2.0) {
-      m_robotDrive.arcadeDrive(-PercentageVoltage, drift2);
+      directioner.set(-1);
+      main_launcher.set(1);
+
+    }
+    else if ((m_timer.get()) < 2.71) {
+      directioner.set(0);
+      main_launcher.set(0);
+      m_robotDrive.arcadeDrive(PercentageVoltage, -drift2); // backwards
       System.out.println(realtime);
     } 
-    else{
+    else if ((m_timer.get()) < 6) {
+      m_robotDrive.arcadeDrive(0, 0); // backwards
+      System.out.println(realtime);
+    }
+    else if ((m_timer.get()) < 7.71) {
+      m_robotDrive.arcadeDrive(-PercentageVoltage, drift2); // backwards
+      System.out.println(realtime);
+    }
+    else if ((m_timer.get()) < 10) {
+      directioner.set(0);
+      main_launcher.set(0);
+
+
+      directioner.set(-1);
+      main_launcher.set(1);
+
+
+    }
+      else{
+      directioner.set(0);
+      main_launcher.set(0);
       m_robotDrive.arcadeDrive(0, 0);
 
     }
