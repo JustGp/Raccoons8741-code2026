@@ -128,6 +128,8 @@ public class Robot extends TimedRobot {
   private double Voltage = 0;
   private double PercentageVoltage = 0;
 
+  private double preheat = 1; // seconds to preheat the shooter
+
 
   //For once
   private boolean once = true;
@@ -199,12 +201,12 @@ public class Robot extends TimedRobot {
     double time = Timer.getFPGATimestamp();
     realtime = time - StartTime;
 
-    if (m_timer.get() <2){ //preheat 
+    if (m_timer.get() <1){ //preheat 
       main_launcher.set(0.8);
       directioner.set(0);
 
     }
-    else if (m_timer.get() < 5) {//shoot
+    else if (m_timer.get() < 4) {//shoot
       directioner.set(0);
       main_launcher.set(0);
 
@@ -213,34 +215,34 @@ public class Robot extends TimedRobot {
       main_launcher.set(0.8);
 
     }
-    else if ((m_timer.get()) < 7.41) { //move backwards
+    else if ((m_timer.get()) < 6.41) { //move backwards
       directioner.set(0);
       main_launcher.set(0);
       m_robotDrive.arcadeDrive(-PercentageVoltage, drift2); // backwards
       System.out.println(realtime);
     } 
-    else if ((m_timer.get()) < 11) { // stop
+    else if ((m_timer.get()) < 10) { // stop
       m_robotDrive.arcadeDrive(0, 0); 
       System.out.println(realtime);
     }
-    else if ((m_timer.get()) < 12.71) { // remove
+    else if ((m_timer.get()) < 11.71) { // move forwards
       m_robotDrive.arcadeDrive(PercentageVoltage, drift2); 
       System.out.println(realtime);
     }
-    else if((m_timer.get()< 14.71)){
+    else if((m_timer.get()< 13.71)){ // stop and preheat
       m_robotDrive.arcadeDrive(0,0);
       main_launcher.set(0.8);
       directioner.set(0);
 
     }
-    else if((m_timer.get()< 14.71)){
+    else if((m_timer.get()< 14.71)){ // shoot
       m_robotDrive.arcadeDrive(0,0);
       main_launcher.set(0.8);
       directioner.set(-1);
     }
 
 
-    else if ((m_timer.get()) < 20) {
+    else if ((m_timer.get()) < 17) {
       directioner.set(0);
       main_launcher.set(0);
 
