@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import static edu.wpi.first.units.Units.Volt;
 
@@ -25,6 +28,8 @@ import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
+
+
 
 /*
  *          Hello!!!
@@ -53,6 +58,14 @@ import edu.wpi.first.wpilibj.SPI;
  * Off -------- B
  * GrabnStore - X
  * Spit ------- Y
+ * 
+ * 
+ * Formulas for the calculations of the distance and rotations
+ * 
+ * a+b(PV)+c*t+d(PV*t)+e(PV^2)*t for distance, off by 4 cm
+ * θ = (217.15 * t + -16.78) * (PV / 8) for rotation, off by 5.4%
+ * 
+ * This formulas aren't perfect, but will get us close to the target, final adjustments should be done physically
  * 
  * 
  * 
@@ -116,9 +129,8 @@ public class Robot extends TimedRobot {
   private double PercentageVoltage = 0;
 
 
-
-
-  private double velocity = 0.5;
+  //For once
+  private boolean once = true;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -186,32 +198,41 @@ public class Robot extends TimedRobot {
 
     double time = Timer.getFPGATimestamp();
     realtime = time - StartTime;
-    System.out.println(m_timer.get());
 
-    if (m_timer.get() < 1) {
+    if (m_timer.get() <2){ //preheat 
+      main_launcher.set(0.8);
+      directioner.set(0);
+
+    }
+    else if (m_timer.get() < 5) {//shoot
       directioner.set(0);
       main_launcher.set(0);
 
 
       directioner.set(-1);
-      main_launcher.set(1);
+      main_launcher.set(0.8);
 
     }
-    else if ((m_timer.get()) < 2.71) {
+    else if ((m_timer.get()) < 7.71) { //move backwards
       directioner.set(0);
       main_launcher.set(0);
-      m_robotDrive.arcadeDrive(PercentageVoltage, -drift2); // backwards
+      m_robotDrive.arcadeDrive(-PercentageVoltage, -drift2); // backwards
       System.out.println(realtime);
     } 
-    else if ((m_timer.get()) < 6) {
-      m_robotDrive.arcadeDrive(0, 0); // backwards
+    else if ((m_timer.get()) < 11) { // stop
+      m_robotDrive.arcadeDrive(0, 0); 
       System.out.println(realtime);
     }
-    else if ((m_timer.get()) < 7.71) {
-      m_robotDrive.arcadeDrive(-PercentageVoltage, drift2); // backwards
+    else if ((m_timer.get()) < 16.71) { // remove
+      m_robotDrive.arcadeDrive(PercentageVoltage, drift2); 
       System.out.println(realtime);
     }
-    else if ((m_timer.get()) < 10) {
+    else if((m_timer.get()< 18.71)){
+      m_robotDrive.arcadeDrive(0,0);
+      main_launcher.set(0.8);
+      directioner.set(0);
+    }
+    else if ((m_timer.get()) < 20) {
       directioner.set(0);
       main_launcher.set(0);
 
@@ -248,6 +269,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   /** This function is called periodically during operator control. */
@@ -270,9 +292,15 @@ public class Robot extends TimedRobot {
     directioner.set(0);
     main_launcher.set(0);
 
-
-    directioner.set(-1);
     main_launcher.set(1);// to laucnh put 1
+
+    for (int i= 0; i< 500; i++){
+      System.out.println(i);
+    }
+    directioner.set(-1);
+    main_launcher.set(0);
+    main_launcher.set(0.8);
+    
   }
 
 
@@ -290,15 +318,15 @@ public class Robot extends TimedRobot {
     main_launcher.set(0);
 
 
-    directioner.set(0.6);
-    main_launcher.set(0.3);//negative
+    directioner.set(1);
+    main_launcher.set(0.3);
   }
 //spit
   if (m_controller.getYButton()){
     directioner.set(0);
     main_launcher.set(0);
 
-    directioner.set(0.5);
+    directioner.set(-1);
     main_launcher.set(-0.55);
 
   }
