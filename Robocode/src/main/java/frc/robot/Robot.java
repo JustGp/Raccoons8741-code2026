@@ -213,25 +213,33 @@ public class Robot extends TimedRobot {
       main_launcher.set(0.8);
 
     }
-    else if ((m_timer.get()) < 7.71) { //move backwards
+    else if ((m_timer.get()) < 7.41) { //move backwards
       directioner.set(0);
       main_launcher.set(0);
-      m_robotDrive.arcadeDrive(-PercentageVoltage, -drift2); // backwards
+      m_robotDrive.arcadeDrive(-PercentageVoltage, drift2); // backwards
       System.out.println(realtime);
     } 
     else if ((m_timer.get()) < 11) { // stop
       m_robotDrive.arcadeDrive(0, 0); 
       System.out.println(realtime);
     }
-    else if ((m_timer.get()) < 16.71) { // remove
+    else if ((m_timer.get()) < 12.71) { // remove
       m_robotDrive.arcadeDrive(PercentageVoltage, drift2); 
       System.out.println(realtime);
     }
-    else if((m_timer.get()< 18.71)){
+    else if((m_timer.get()< 14.71)){
       m_robotDrive.arcadeDrive(0,0);
       main_launcher.set(0.8);
       directioner.set(0);
+
     }
+    else if((m_timer.get()< 14.71)){
+      m_robotDrive.arcadeDrive(0,0);
+      main_launcher.set(0.8);
+      directioner.set(-1);
+    }
+
+
     else if ((m_timer.get()) < 20) {
       directioner.set(0);
       main_launcher.set(0);
