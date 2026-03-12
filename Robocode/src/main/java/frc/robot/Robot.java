@@ -78,7 +78,7 @@ import edu.wpi.first.wpilibj.SPI;
  * 0.25s = 39 degrees to the right
  * 0.3 - 58 degrees to the right
  * 0.5 = 97 degrees to the right
- * 0.6s = 76 degrees
+ * 0.4s = 76 degrees
  * 0.7 = 127 degrees 
  * 0.75 = 137 degrees to the right
  * 0.8 = 156 degrees to the right
@@ -201,6 +201,14 @@ public class Robot extends TimedRobot {
     double time = Timer.getFPGATimestamp();
     realtime = time - StartTime;
 
+
+    /*
+     * Autonomos commands
+     * 
+     * 1.71s = move forwards
+     * 0.95 = rotate aprox 180 degrees to the right
+     * 
+     */
     if (m_timer.get() <1){ //preheat 
       main_launcher.set(0.8);
       directioner.set(0);
@@ -220,22 +228,34 @@ public class Robot extends TimedRobot {
       main_launcher.set(0);
       m_robotDrive.arcadeDrive(-PercentageVoltage, drift2); // backwards
       System.out.println(realtime);
+
     } 
+
+    else if ((m_timer.get()) < 7.36) { // rotate right
+      m_robotDrive.arcadeDrive(0, PercentageVoltage); // turn right
+      System.out.println(realtime);
+    }
     else if ((m_timer.get()) < 10) { // stop
       m_robotDrive.arcadeDrive(0, 0); 
       System.out.println(realtime);
     }
-    else if ((m_timer.get()) < 11.71) { // move forwards
+
+
+    else if ((m_timer.get()) < 10.95) { // rotate left
+      m_robotDrive.arcadeDrive(0, -PercentageVoltage); // turn left
+      System.out.println(realtime);
+    }
+    else if ((m_timer.get()) < 12.36) { // move forwards
       m_robotDrive.arcadeDrive(PercentageVoltage, drift2); 
       System.out.println(realtime);
     }
-    else if((m_timer.get()< 13.71)){ // stop and preheat
+    else if((m_timer.get()< 13.36)){ // stop and preheat
       m_robotDrive.arcadeDrive(0,0);
       main_launcher.set(0.8);
       directioner.set(0);
 
     }
-    else if((m_timer.get()< 14.71)){ // shoot
+    else if((m_timer.get()< 14.36)){ // shoot
       m_robotDrive.arcadeDrive(0,0);
       main_launcher.set(0.8);
       directioner.set(-1);
@@ -298,6 +318,8 @@ public class Robot extends TimedRobot {
 
 
   //shoot
+
+  /* 
   if(m_controller.getRightBumper()){
     directioner.set(0);
     main_launcher.set(0);
@@ -311,6 +333,34 @@ public class Robot extends TimedRobot {
     main_launcher.set(0);
     main_launcher.set(0.8);
     
+  } */
+
+
+  // shooting mechanisms
+
+  /*
+   * right bumper = shoot off
+   * right trigger = shoot on
+   * 
+   * left bumper = directioner off
+   * left trigger = directioner on
+   * 
+   * 
+   */
+
+   //shooting and directioner mechanism controls
+  if(m_controller.getRightBumper()){
+    main_launcher.set(0);
+  }
+  if(m_controller.getRightTriggerAxis()>0.5){
+    main_launcher.set(0.8);
+    }
+
+  if(m_controller.getLeftBumper()){
+    directioner.set(0);
+  }
+  if(m_controller.getLeftTriggerAxis()>0.5){
+    directioner.set(-1);
   }
 
 
