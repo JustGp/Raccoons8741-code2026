@@ -157,7 +157,6 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -170,12 +169,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
-    }
+
     StartTime = System.currentTimeMillis();
 
     m_timer.reset();
@@ -214,67 +210,8 @@ public class Robot extends TimedRobot {
       directioner.set(0);
 
     }
-    else if (m_timer.get() < 4) {//shoot
-      directioner.set(0);
-      main_launcher.set(0);
-
-
-      directioner.set(-1);
-      main_launcher.set(0.8);
-
-    }
-    else if ((m_timer.get()) < 6.41) { //move backwards
-      directioner.set(0);
-      main_launcher.set(0);
-      m_robotDrive.arcadeDrive(-PercentageVoltage, drift2); // backwards
-      System.out.println(realtime);
-
-    } 
-
-    else if ((m_timer.get()) < 7.36) { // rotate right
-      m_robotDrive.arcadeDrive(0, PercentageVoltage); // turn right
-      System.out.println(realtime);
-    }
-    else if ((m_timer.get()) < 10) { // stop
-      m_robotDrive.arcadeDrive(0, 0); 
-      System.out.println(realtime);
-    }
-
-
-    else if ((m_timer.get()) < 10.95) { // rotate left
-      m_robotDrive.arcadeDrive(0, -PercentageVoltage); // turn left
-      System.out.println(realtime);
-    }
-    else if ((m_timer.get()) < 12.36) { // move forwards
-      m_robotDrive.arcadeDrive(PercentageVoltage, drift2); 
-      System.out.println(realtime);
-    }
-    else if((m_timer.get()< 13.36)){ // stop and preheat
-      m_robotDrive.arcadeDrive(0,0);
-      main_launcher.set(0.8);
-      directioner.set(0);
-
-    }
-    else if((m_timer.get()< 14.36)){ // shoot
-      m_robotDrive.arcadeDrive(0,0);
-      main_launcher.set(0.8);
-      directioner.set(-1);
-    }
-
-
-    else if ((m_timer.get()) < 17) {
-      directioner.set(0);
-      main_launcher.set(0);
-
-
-      directioner.set(-1);
-      main_launcher.set(1);
-
-
-    }
-      else{
-      directioner.set(0);
-      main_launcher.set(0);
+    else if (m_timer.get() < 5){ 
+      directioner.set(1);
       m_robotDrive.arcadeDrive(0, 0);
 
     }
